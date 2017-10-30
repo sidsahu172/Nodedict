@@ -12,14 +12,29 @@ var fs = require("fs");
 var rl = require("readline");
 var prompts = rl.createInterface(process.stdin, process.stdout);
 
-prompts.question("Enter the word: ", function (a) {
+//for similarity
+var sim=require('similarity')
+var simword=[];
+function suggest(x){
+  for(i in jsonContent){
+    if(sim(i,x)>0.6){
+          simword.push(i)
+}
+}
+console.log("Did you mean any of these: "+simword);
+}
 
-  if(a in jsonContent){
-    console.log(jsonContent[a]);
-  }
-  else {
-    console.log("Try again with correct spelling");
-  }
+function dict(){
+  prompts.question("Enter the word: ", function (a) {
 
-process.exit();
-});
+    if(a in jsonContent){
+      console.log(jsonContent[a]);
+      process.exit();
+    }
+    else {
+  suggest(a)
+  dict()
+      }
+  });
+ }
+dict()
